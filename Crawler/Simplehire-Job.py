@@ -1,13 +1,14 @@
 from playwright.sync_api import sync_playwright
 import json
 
+
 def scrape_without_clicking():
     """Faster method: extract all data from cards without clicking each"""
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
 
-        page.goto("https://www.simplyhired.co.in/search?q=software+engineer&l=pune")
+        page.goto("https://www.simplyhired.co.in/search?q=software+developer&l=&t=1")
         page.wait_for_load_state("networkidle")
 
         all_jobs = []
@@ -23,18 +24,26 @@ def scrape_without_clicking():
             items = page.locator("ul#job-list > li")
             print("Number of job cards:", items.count())
 
-            for i in range(1, items.count()+1):
+            for i in range(1, items.count() + 1):
                 page.click(f"#job-list > li:nth-child({i})")
                 print(i);
                 page.wait_for_load_state("networkidle")
-                content = page.locator("#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > div")
+                content = page.locator(
+                    "#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > div")
                 print(content.text_content())
                 print(page.url)
+                title = page.locator("#job-list > li:nth-child(1) > div > div.chakra-stack.css-1igwmid > h2 > a")
+                print("Title:" + title.text_content())
+                company = page.locator("#job-list > li:nth-child(19) > div > p > span.css-lvyu5j > span")
+                print("Company:" + company.text_content())
+                location = page.locator("#job-list > li:nth-child(19) > div > p > span.css-1t92pv")
+                print("Location:" + title.text_content())
+                save_job(title.text_content(),company.text_content(), location.text_content(), page.url, content.text_content())
                 # apply = page.locator(f"#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > header > div > div > div.css-1r85bh9 > ul.css-t8ypn1 > li:nth-child({i}) > a")
                 # print(apply.get_attribute("href"))
-                # page.wait_for_timeout(3000)
+                page.wait_for_timeout(3000)
                 print("------------------------------------------------------")
-            page_num=page_num+1
+            page_num = page_num + 1
             # Get the current page number text
             current_page = page.locator("ul[data-testid='pageNumberContainer'] span[aria-current='true']")
             current_text = current_page.inner_text()
@@ -59,6 +68,17 @@ def scrape_without_clicking():
 
         print(f"\n=== Total: {len(all_jobs)} jobs ===")
         return all_jobs
+
+
+def save_job(title: str, company: str, location: str, link: str, content: str):
+    with open("jobs.md", "a", encoding="utf-8") as f:
+        f.write(f"## {title}\n\n")
+        f.write(f"# {company}\n\n")
+        f.write(f" {location}\n\n")
+        f.write(f"[Job Link] {link}\n\n")
+        f.write(f"[Description] {content}\n\n")
+        f.write("---\n\n")
+
 
 if __name__ == "__main__":
     scrape_without_clicking()
