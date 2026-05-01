@@ -2,7 +2,7 @@ from playwright.sync_api import sync_playwright
 import json
 import os
 from datetime import datetime
-
+import re
 
 
 def scrape_without_clicking():
@@ -32,8 +32,7 @@ def scrape_without_clicking():
                 page.click(f"#job-list > li:nth-child({i})")
                 print(i);
                 page.wait_for_timeout(3000)
-                content = page.locator(
-                    "#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > div")
+                content = page.locator("#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > div")
                 print(content.text_content())
                 print(page.url)
                 title = page.locator(f"#job-list > li:nth-child({i}) > div > div.chakra-stack.css-1igwmid > h2 > a")
@@ -94,7 +93,10 @@ def save_job_json(title: str, company: str, location: str, link: str, content: s
         "content": content,
     }
 
-    with open(f"jobs/job_{title}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json", "w", encoding="utf-8") as f:
+    safe_title = re.sub(r'[\\/:*?"<>|]', '', title).strip()[:50]
+    filename = f"jobs/{safe_title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(job, f, indent=2, ensure_ascii=False)
 
 
