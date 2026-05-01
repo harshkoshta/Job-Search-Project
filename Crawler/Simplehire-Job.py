@@ -29,9 +29,10 @@ def scrape_without_clicking():
                 page.wait_for_load_state("networkidle")
                 content = page.locator("#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > div")
                 print(content.text_content())
-                apply = page.locator(f"#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > header > div > div > div.css-1r85bh9 > ul.css-t8ypn1 > li:nth-child({i}) > a")
-                print(apply.get_attribute("href"))
-                page.wait_for_load_state("networkidle")
+                print(page.url)
+                # apply = page.locator(f"#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > header > div > div > div.css-1r85bh9 > ul.css-t8ypn1 > li:nth-child({i}) > a")
+                # print(apply.get_attribute("href"))
+                # page.wait_for_timeout(3000)
                 print("------------------------------------------------------")
             page_num=page_num+1
         browser.close()
