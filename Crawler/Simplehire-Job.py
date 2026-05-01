@@ -12,7 +12,7 @@ def scrape_without_clicking():
 
         all_jobs = []
         page_num = 1
-        max_pages = 1
+        max_pages = 10
 
         while page_num <= max_pages:
             print(f"\n=== Page {page_num} ===")
@@ -35,6 +35,23 @@ def scrape_without_clicking():
                 # page.wait_for_timeout(3000)
                 print("------------------------------------------------------")
             page_num=page_num+1
+            # Get the current page number text
+            current_page = page.locator("ul[data-testid='pageNumberContainer'] span[aria-current='true']")
+            current_text = current_page.inner_text()
+            print("Currently on page:", current_text)
+
+            # Calculate next page number
+            next_number = str(int(current_text) + 1)
+
+            # Try to find the next page link by its text
+            next_page = page.locator(f"ul[data-testid='pageNumberContainer'] a:has-text('{next_number}')")
+
+            if next_page.count() > 0:
+                print(f"Clicking page {next_number}")
+                with page.expect_navigation():
+                    next_page.click()
+            else:
+                print(f"No page {next_number} exists. Stopping.")
         browser.close()
 
         with open("../simplyhired_jobs.json", "w", encoding="utf-8") as f:
