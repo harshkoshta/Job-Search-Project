@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import ollama
@@ -94,6 +95,7 @@ for file in Path("D:\\working repository\Job-Search-Project\Crawler\jobs").glob(
     response = ollamaSummary(MODEL, raw_json)
     print(response)
     save_file(response,link)
+    os.remove(file)
 # print(ollamaSummary(MODEL,"Where is Jabalpur located and tell me more about it "))
 
 
