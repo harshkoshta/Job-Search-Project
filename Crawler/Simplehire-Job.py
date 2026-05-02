@@ -12,7 +12,7 @@ def scrape_without_clicking():
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
 
-        page.goto("https://www.simplyhired.co.in/search?q=software+developer&l=&t=7")
+        page.goto("https://www.simplyhired.co.in/search?q=java+developer&l=&t=7")
         page.wait_for_load_state("networkidle")
 
         all_jobs = []
