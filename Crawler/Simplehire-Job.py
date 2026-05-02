@@ -41,7 +41,7 @@ def scrape_without_clicking():
                 print("Company:" + company.text_content())
                 location = page.locator(f"#job-list > li:nth-child({i}) > div > p > span.css-1t92pv")
                 print("Location:" + title.text_content())
-                save_job(title.text_content(),company.text_content(), location.text_content(), page.url, content.text_content())
+                # save_job(title.text_content(),company.text_content(), location.text_content(), page.url, content.text_content())
                 save_job_json(title.text_content(),company.text_content(), location.text_content(), page.url, content.text_content())
                 # apply = page.locator(f"#__next > div > main > div > div.css-17iqsqz > div > div > div.css-1k5vmo0 > div > div > div > aside > header > div > div > div.css-1r85bh9 > ul.css-t8ypn1 > li:nth-child({i}) > a")
                 # print(apply.get_attribute("href"))
