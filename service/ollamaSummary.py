@@ -61,7 +61,6 @@ def json_to_text(file: Path):
         f"Title: {data.get('title', '')}\n"
         f"Company: {data.get('company', '')}\n"
         f"Location: {data.get('location', '')}\n"
-        f"Link: {data.get('link', '')}\n"
         f"Description:\n{data.get('content', '')}"
     )
 
