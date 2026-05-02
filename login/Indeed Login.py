@@ -22,7 +22,7 @@ def login_and_get_cookies():
         page.click("text=Sign In or Sign Up")
         page.wait_for_timeout(3000)
         email_selector="#ifl-InputFormField-\\:passport-ssr-Reaktala\\:"
-        page.fill(email_selector, "koshta1999@gmail.com")
+        page.fill(email_selector, "mcafreedec@gmail.com")
         page.wait_for_timeout(5000)
         page.click("#emailform > button")
         page.wait_for_timeout(5000)
@@ -34,7 +34,8 @@ def login_and_get_cookies():
         # page.wait_for_timeout(5000)
         page.click("text=Sign in with a code instead")
         page.wait_for_timeout(5000)
-        otp_checker = GmailOTPChecker("koshta1999@gmail.com", "smon pytr pkdp xqbh")
+        # otp_checker = GmailOTPChecker("koshta1999@gmail.com", "smon pytr pkdp xqbh")
+        otp_checker = GmailOTPChecker("mcafreedec@gmail.com", "uddm btoj qpur xgys")
         otp_checker.login()
         otp = otp_checker.otpcheck()
         page.fill("#passcode-input", otp)
