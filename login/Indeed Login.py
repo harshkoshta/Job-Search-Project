@@ -1,13 +1,17 @@
 from playwright.sync_api import sync_playwright
 from service.GmailOTPChecker import GmailOTPChecker
+from playwright_stealth import  Stealth
+from playwright.sync_api import sync_playwright
+
 def login_and_get_cookies():
 
-    with sync_playwright() as p:
+    with Stealth().use_sync(sync_playwright()) as p:
         # Launch browser in headless mode (no UI)
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
 
 
         page = browser.new_page()
+
         context = browser.new_context()
 
         # Navigate to login page
