@@ -18,83 +18,38 @@ def ollamaSummary(model, job_text):
 
 # ── Prompt ────────────────────────────────────────────────────────────────────
 def build_prompt(job_text: str) -> str:
-    return f"""You are an expert IT job description parser for the Indian tech industry.
-Extract ALL information from the job posting below and return ONLY a raw JSON object.
-No explanation. No markdown. No code fences. Just the JSON.
-Never Add extra information, or details which is not mentioned in the job description.
+    return f"""You Have to Extract values from content and Dont have to invent any lines or numbers. If Not enough information then leave that value. Return ONLY raw JSON, no explanation, no markdown.
+STRICT: Only use information explicitly written below. Empty string if not found.
 
-OUTPUT FORMAT:
+INPUT:
+{job_text}
+
+OUTPUT JSON:
 {{
-  "job_title": "",
-  "company": "",
-  "location": [],
-  "work_mode": "",
+  "job_title": "",        
+  "company": "",          
+  "location": [],         
+  "work_mode": "",        
   "experience_required": "",
-  "salary": "",
-  "required_skills": [],
-  "responsibilities": [],
-  "job_type": "",
-  "summary": "",
-  "link": ""
+  "salary": "",           
+  "required_skills": [],  
+  "responsibilities": [], 
+  "job_type": "",         
+  "summary": "",          
+  "link": ""              
 }}
 
-EXTRACTION RULES:
-
-job_title:
-- Use directly from input otherwise
-- Check both explicit mentions AND indirect clues like "senior", "junior", "entry level" then update job title like that
-
-company:
-- Use company name as-is from input
-
-location:
-- Always keep the location from input
-- Also scan description for additional locations, office names, or city mentions
-- Add work mode clues e.g. "Chennai (Hybrid - 2 days onsite)"
-- Return as list if multiple locations
-
-work_mode:
-- Detect from description: remote / hybrid / onsite / not mentioned
-- Look for keywords: "work from home", "hybrid", "in-person", "office", "days a week", "wfo", "wfh"
-
-experience_required:
-- Extract as a range e.g. "1-3 years", "3-5 years"
-- If only one number mentioned e.g. "3 years" return "3+ years"
-- Check both explicit mentions AND indirect clues like "senior", "junior", "entry level"
-- Return number/range only, no extra text
-
-salary:
-- Extract if mentioned, else empty string
-- Normalize to yearly if monthly is  tell in lpa(lakhs per annum)
-
-required_skills:
-- List every technology, language, framework, tool, platform explicitly required
-- ALSO extract skills indirectly mentioned in responsibilities or "what you'll bring" sections
-- For each skill, check if a minimum years of experience is mentioned
-- Include: languages, frameworks, databases, cloud platforms, DevOps tools, protocols, methodologies
-
-good_to_have_skills:
-- Skills marked as "preferred", "good to have", "nice to have", "plus", "advantage"
-- Same format as required_skills add it insie required skills
-
-responsibilities:
-- Max 4 bullet points
-- Extract the actual work the person will DO, not requirements
-- Keep each point under 15 words
-
-job_type:
-- full-time / part-time / contract / internship / not mentioned
-
-summary:
-- 3 lines: what the company does + what this role does
-- Be specific, not generic
-
-link:
-- Copy the link from input exactly, do not change
-
-JOB INPUT:
-{job_text}
-"""
+RULES:
+- job_title: from title field. Add Senior/Junior/Lead only if explicitly written
+- location: list. Include all cities found anywhere in description
+- work_mode: remote/hybrid/onsite — scan for wfh/wfo/hybrid/in-person/days a week. else ""
+- experience_required: numbers only e.g. "2-4 years". Check experience, years, senior/junior clues
+- salary: INR/LPA only. Convert monthly to yearly LPA. else ""
+- required_skills: every tool/language/framework/platform found anywhere in description
+- responsibilities: max 3 points. What the person DOES. Under 10 words each
+- job_type: full-time/part-time/contract/internship. else ""
+- summary: 2 lines. Company purpose + role purpose. Facts only, no fluff
+- link: copy exactly as given, do not modify"""
 
 import json
 
@@ -114,5 +69,4 @@ def json_to_text(file: Path):
 for file in Path("D:\\working repository\Job-Search-Project\Crawler\jobs").glob("*.json"):
     print(f"\n--- {file.name} ---")
     print("Output: "+str(ollamaSummary(MODEL, json_to_text(file))))
-    break
 # print(ollamaSummary(MODEL,"Where is Jabalpur located and tell me more about it "))
